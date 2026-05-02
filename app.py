@@ -3,9 +3,11 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from PIL import Image
+from flask_cors import CORS 
 import os
 
 app = Flask(__name__)
+CORS(app)
 
 # Load model once at startup
 model = tf.keras.models.load_model("diabetic_retinopathy_model.keras")

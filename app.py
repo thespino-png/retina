@@ -3,13 +3,12 @@ import tensorflow as tf
 import numpy as np
 from tensorflow.keras.applications.efficientnet import preprocess_input
 from PIL import Image
-from flask_cors import CORS 
+from flask_cors import CORS
 import os
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, origins="*", methods=["GET", "POST", "OPTIONS"], allow_headers=["Content-Type"])
 
-# Load model once at startup
 model = tf.keras.models.load_model("diabetic_retinopathy_model.keras")
 IMG_SIZE = (224, 224)
 
@@ -17,8 +16,11 @@ IMG_SIZE = (224, 224)
 def home():
     return jsonify({"status": "Model API is running ✅"})
 
-@app.route("/predict", methods=["POST"])
+@app.route("/predict", methods=["POST", "OPTIONS"])
 def predict():
+    if request.method == "OPTIONS":
+        return jsonify({"status": "ok"}), 200
+        
     if "image" not in request.files:
         return jsonify({"error": "No image provided"}), 400
 
